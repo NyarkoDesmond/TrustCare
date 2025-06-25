@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCare - Newborn Data Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f0f7ff 0%, #f9f9f9 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e0e7ff;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.2rem;
+            color: #4a6cf7;
+            background: #e0e7ff;  
+            padding: 15px;
+            border-radius: 50%;
+        }
+        
+        .logo h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #2d3748;
+        }
+        
+        .logo span {
+            color: #4a6cf7;
+        }
+        
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .notification {
+            position: relative;
+            font-size: 1.3rem;
+            color: #4a5568;
+            cursor: pointer;
+        }
+        
+        .notification::after {
+            content: '3';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff6b6b;
+            color: white;
+            font-size: 0.7rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .main-layout {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-radius: 16px;
+            padding: 25px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            padding: 0 20px;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            text-decoration: none;
+            color: #4a5568;
+            border-radius: 12px;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: #f0f7ff;
+            color: #4a6cf7;
+        }
+        
+        .sidebar-menu i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .content-area {
+            flex: 1;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .dashboard-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.8rem;
+            color: #2d3748;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background: #4a6cf7;
+            color: white;
+            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: #3a5af5;
+            transform: translateY(-2px);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-left: 4px solid #4a6cf7;
+        }
+        
+        .stat-card:nth-child(2) {
+            border-left-color: #10b981;
+        }
+        
+        .stat-card:nth-child(3) {
+            border-left-color: #f59e0b;
+        }
+        
+        .stat-card:nth-child(4) {
+            border-left-color: #ef4444;
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 10px 0 5px;
+        }
+        
+        .stat-label {
+            color: #718096;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stat-trend {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #f0fdf4;
+            color: #10b981;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            width: fit-content;
+        }
+        
+        .stat-trend.down {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .form-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        
+        .form-header h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .form-header h3 i {
+            color: #4a6cf7;
+            background: #f0f7ff;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .form-section {
+            margin-bottom: 15px;
+        }
+        
+        .form-section h4 {
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-section h4 i {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.95rem;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #ef4444;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #a3bffa;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(163, 191, 250, 0.3);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #edf2f7;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-outline:hover {
+            background: #f8fafc;
+        }
+        
+        .message-box {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 25px;
+            max-width: 400px;
+            z-index: 1000;
+            display: none;
+            transform: translateX(120%);
+            animation: slideIn 0.5s forwards;
+            border-left: 5px solid;
+        }
+        
+        @keyframes slideIn {
+            to { transform: translateX(0); }
+        }
+        
+        .message-box.success {
+            border-left-color: #10b981;
+        }
+        
+        .message-box.error {
+            border-left-color: #ef4444;
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .message-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .success .message-icon {
+            background: #d1fae5;
+            color: #10b981;
+        }
+        
+        .error .message-icon {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+        
+        .message-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        
+        .success .message-title {
+            color: #10b981;
+        }
+        
+        .error .message-title {
+            color: #ef4444;
+        }
+        
+        .message-content {
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .message-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 25px 0;
+            color: #718096;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+        }
+    </style>
+</head>
+
+ <div class="main-layout">
+            <nav class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#"><i class="fas fa-user-plus"></i> New Registration</a></li>
+                    <li><a href="#"><i class="fas fa-heartbeat"></i> Medical History</a></li>
+                    <li><a href="#"><i class="fas fa-syringe"></i> Vaccinations</a></li>
+                    <li><a href="#"><i class="fas fa-user"></i> Need Help</a></li>
+                </ul>
+            </nav>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-baby"></i>
+                <h1>First<span>Track</span></h1>
+            </div>
+            
+                <div class="user-profile">
+                    
+                    <div>
+                        <div class="user-name">Dr. Godfred Odoom</div>
+                        <div class="user-role">Pediatrician</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </body>
+    <div class="form-container">
+                    <div class="form-header">
+                        <h3><i class="fas fa-user-plus"></i> Register New Baby</h3>
+                    </div>
+                    
+                    <form id="babyRegistrationForm">
+                        <div class="form-grid">
+                            <div class="form-section">
+                                <h4><i class="fas fa-info-circle"></i> Baby Information</h4>
+                                
+                                <div class="form-group">
+                                    <label class="required">Full Name</label>
+                                    <input type="text" placeholder="Enter baby's full name" required>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="required">Gender</label>
+                                        <select required>
+                                            <option value="">Select gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Date of Birth</label>
+                                        <input type="date">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="required">Birth Weight (kg)</label>
+                                        <input type="number" step="0.01" min="0.5" max="6.0" placeholder="3.5" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Birth Height (cm)</label>
+                                        <input type="number" min="30" max="60" placeholder="50.2">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h4><i class="fas fa-users"></i> Parent Information</h4>
+                                
+                                <div class="form-group">
+                                    <label class="required">Mother's Full Name</label>
+                                    <input type="text" placeholder="Mother's name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Father's Full Name</label>
+                                    <input type="text" placeholder="Father's name">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="required">Contact Phone</label>
+                                    <input type="Tel" placeholder="+233" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" placeholder="family@example.com">
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h4><i class="fas fa-heartbeat"></i> Medical Information</h4>
+                                
+                                
+                                    <div class="form-group">
+                                        <label class="required">Delivery Method</label>
+                                        <select required>
+                                            <option value="">Select method</option>
+                                            <option value="vaginal">Vaginal Delivery</option>
+                                            <option value="cesarean">Cesarean Section</option>
+                                            <option value="assisted">Assisted Vaginal Delivery</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Complications</label>
+                                    <textarea placeholder="Describe any complications during delivery" rows="3"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Initial Vaccinations</label>
+                                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                                        <label style="display: flex; align-items: center; font-weight: normal;">
+                                            <input type="checkbox" style="width: auto; margin-right: 10px;"> Hepatitis B Vaccine
+                                        </label>
+                                        <label style="display: flex; align-items: center; font-weight: normal;">
+                                            <input type="checkbox" style="width: auto; margin-right: 10px;"> Vitamin K Injection
+                                        </label>
+                                        <label style="display: flex; align-items: center; font-weight: normal;">
+                                            <input type="checkbox" style="width: auto; margin-right: 10px;"> Eye Antibiotic Ointment
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                            <button type="button" class="btn btn-primary" id="submitSuccess">
+                                <i class="fas fa-save"></i> Save Record
+                            </button>
+                            <button type="button" class="btn btn-primary" id="submitError" style="background: #f59e0b;">
+                                <i class="fas fa-exclamation-circle"></i> Test Error
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="footer">
+                    <p>FirstTrack Newborn Data Management System | HIPAA Compliant | Version 2.1</p>
+                    <p>&copy; 2023 FirstTrack Medical Solutions. All rights reserved.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Success Message Box -->
+    <div class="message-box success" id="successMessage">
+        <div class="message-header">
+            <div class="message-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="message-title">Registration Successful!</div>
+        </div>
+        <div class="message-content">
+            <p>Baby record has been successfully created with ID: <strong>Serial_Number</strong></p>
+            <p>Name: <strong>Godfred Odoom</strong></p>
+            <p>DOB: <strong>June 17, 2025 08:32 AM</strong></p>
+        </div>
+        <div class="message-actions">
+            <button class="btn btn-primary btn-sm" id="closeSuccess">
+                <i class="fas fa-check"></i> OK
+            </button>
+            <button class="btn btn-outline btn-sm">
+                <i class="fas fa-print"></i> Print
+            </button>
+        </div>
+    </div>
+    
+    <!-- Error Message Box -->
+    <div class="message-box error" id="errorMessage">
+        <div class="message-header">
+            <div class="message-icon">
+                <i class="fas fa-exclamation"></i>
+            </div>
+            <div class="message-title">Registration Failed</div>
+        </div>
+        <div class="message-content">
+            <p>Please correct the following errors:</p>
+            <ul style="padding-left: 20px; margin-top: 10px;">
+                <li>Birth weight must be between 0.5kg and 6.0kg</li>
+                <li>APGAR score must be between 0-10</li>
+                <li>Required field: Delivery method</li>
+            </ul>
+        </div>
+        <div class="message-actions">
+            <button class="btn btn-primary btn-sm" id="closeError">
+                <i class="fas fa-edit"></i> Edit Form
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Show success message
+        document.getElementById('submitSuccess').addEventListener('click', function() {
+            document.getElementById('successMessage').style.display = 'block';
+        });
+        
+        // Show error message
+        document.getElementById('submitError').addEventListener('click', function() {
+            document.getElementById('errorMessage').style.display = 'block';
+        });
+        
+        // Close success message
+        document.getElementById('closeSuccess').addEventListener('click', function() {
+            document.getElementById('successMessage').style.display = 'none';
+        });
+        
+        // Close error message
+        document.getElementById('closeError').addEventListener('click', function() {
+            document.getElementById('errorMessage').style.display = 'none';
+        });
+        
+        // Form validation
+        document.getElementById('babyRegistrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real application, you would validate the form here
+            document.getElementById('successMessage').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
